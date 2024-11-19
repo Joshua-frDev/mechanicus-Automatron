@@ -1,7 +1,7 @@
 package com.example.examplemod;
 
-import com.example.examplemod.entity.client.AutomatonRender;
-import com.example.examplemod.inventory.ModuleScreen;
+import com.example.examplemod.world.entity.client.AutomatonRender;
+import com.example.examplemod.client.gui.inventory.ModuleScreen;
 import com.example.examplemod.register.ModEntityType;
 import com.example.examplemod.register.ModItem;
 import com.example.examplemod.register.ModMenuType;

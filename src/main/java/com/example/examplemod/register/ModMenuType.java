@@ -1,7 +1,7 @@
 package com.example.examplemod.register;
 
 import com.example.examplemod.ExampleMod;
-import com.example.examplemod.inventory.ModuleMenu;
+import com.example.examplemod.client.gui.inventory.ModuleMenu;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;

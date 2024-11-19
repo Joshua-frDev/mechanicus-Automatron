@@ -1,4 +1,4 @@
-package com.example.examplemod.inventory;
+package com.example.examplemod.client.gui.inventory;
 
 import com.example.examplemod.ExampleMod;
 import com.mojang.blaze3d.systems.RenderSystem;
