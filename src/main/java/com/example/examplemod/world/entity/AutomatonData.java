@@ -8,29 +8,35 @@ import java.util.Map;
 
 public class AutomatonData {
 
+    public static final int MIN_ENERGY = 0;
+    public static final int MAX_ENERGY = 50;
     private Item leftArm = Items.AIR;
     private Item legs = Items.AIR;
     private Item rightArm = Items.AIR;
     private Item core = Items.AIR;
     private Item head = Items.AIR;
-    public static final int MIN_ENERGY = 0;
-    public static final int MAX_ENERGY = 50;
-    private final int energy;
-    private final Map<Integer, Item> entireBody;
+    private int energy;
+    private Map<Integer, String> entireBody;
 
     public AutomatonData(int energy) {
         this.energy = energy;
-        this.entireBody = ImmutableMap.of(0, leftArm,1, legs,2, rightArm,3, core,4, head);
+        this.entireBody = ImmutableMap.of();
     }
 
+//LEFT LEGS RIGHT CORE HEAD
     public AutomatonData(Item leftArm, Item legs, Item rightArm, Item core, Item head, int energy) {
+        this(energy, ImmutableMap.of(0,"a", 1,"ab",2,"abc",3,"abcd",4,"abcde"));
         this.leftArm = leftArm;
         this.legs = legs;
         this.rightArm = rightArm;
         this.core = core;
         this.head = head;
         this.energy = energy;
-        this.entireBody = ImmutableMap.of(0, leftArm,1, legs,2, rightArm,3, core,4, head);
+        this.entireBody = ImmutableMap.of();
+    }
+
+    public <K, V> AutomatonData(int energy, Map<Integer, String> entireBody) {
+
     }
 
     public int getEnergy() {
@@ -61,7 +67,7 @@ public class AutomatonData {
 //
 //    }
 
-    public Map<Integer, Item> getEntireBody() {
+    public Map<Integer, String> getEntireBody() {
         return this.entireBody;
     }
 

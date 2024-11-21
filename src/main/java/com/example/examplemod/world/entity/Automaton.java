@@ -1,13 +1,11 @@
 package com.example.examplemod.world.entity;
 
 import com.example.examplemod.network.ModEDataSerializers;
-import com.example.examplemod.world.item.modulable.Modulable;
+import com.example.examplemod.world.entity.modulable.Modulable;
 import com.example.examplemod.register.ModItem;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.EntityDimensions;
@@ -18,7 +16,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -34,16 +31,15 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class Automaton extends PathfinderMob implements ContainerListener, Modulable, GeoEntity {
 
-    private static final EntityDataAccessor<Byte> DATA_ID_FLAGS;
     protected static final EntityDimensions NO_LEGS_DIMENSIONS;
     protected static final EntityDimensions LEGGED_DIMENSIONS;
-    public static final int INVENTORY_SIZE = 2;
+    public static final int INVENTORY_SIZE = 5;
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     private final ItemStackHandler itemHandler = new ItemStackHandler(INVENTORY_SIZE);
     private static final EntityDataAccessor<AutomatonData> AUTOMATON_DATA;
     private LazyOptional<?> lazyItemHandler = null;
     protected SimpleContainer inventory;
-    private BlockPos boundOrigin;
+    //private BlockPos boundOrigin;
     private Player watchingPlayer;
 
     public Automaton(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
@@ -87,47 +83,25 @@ public class Automaton extends PathfinderMob implements ContainerListener, Modul
         });
     }
 
-    private void updateContainerEquipment() {
-        this.setFlag(4, !this.inventory.getItem(0).isEmpty());
-        this.setFlag(5, !this.inventory.getItem(1).isEmpty());
-        this.setFlag(6, !this.inventory.getItem(2).isEmpty());
-        this.setFlag(7, !this.inventory.getItem(3).isEmpty());
-        this.setFlag(8, !this.inventory.getItem(4).isEmpty());
-    }
-
-    protected void setFlag(int pFlagId, boolean pValue) {
-        byte b0 = (Byte) this.entityData.get(DATA_ID_FLAGS);
-        if (pValue) {
-            this.entityData.set(DATA_ID_FLAGS, (byte) (b0 | pFlagId));
-        } else {
-            this.entityData.set(DATA_ID_FLAGS, (byte) (b0 & ~pFlagId));
-        }
-    }
-//TODO AGREGAR OWNER DE ENTIDAD, QUIEN LO INVOCO
-    protected boolean getFlag(int pFlagId) {
-        return ((Byte) this.entityData.get(DATA_ID_FLAGS) & pFlagId) != 0;
-    }
-
+    //TODO AGREGAR OWNER DE ENTIDAD, QUIEN LO INVOCO
     protected void defineSynchedData() {
         super.defineSynchedData();
+        this.entityData.define(AUTOMATON_DATA, new AutomatonData(50));
     }
 
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
-
-        if (this.boundOrigin != null) {
-            pCompound.putInt("BoundX", this.boundOrigin.getX());
-            pCompound.putInt("BoundY", this.boundOrigin.getY());
-            pCompound.putInt("BoundZ", this.boundOrigin.getZ());
-        }
-
+//        if (this.boundOrigin != null) {
+//            pCompound.putInt("BoundX", this.boundOrigin.getX());
+//            pCompound.putInt("BoundY", this.boundOrigin.getY());
+//            pCompound.putInt("BoundZ", this.boundOrigin.getZ());
+//        }
         ListTag itemList = new ListTag();
-
-        for(int i = 0; i < this.inventory.getContainerSize(); ++i) {
+        for (int i = 0; i < this.inventory.getContainerSize(); ++i) {
             ItemStack item = this.inventory.getItem(i);
             if (!item.isEmpty()) {
                 CompoundTag compoundTag = new CompoundTag();
-                compoundTag.putByte("Slot", (byte)i);
+                compoundTag.putByte("Slot", (byte) i);
                 item.save(compoundTag);
                 itemList.add(compoundTag);
             }
@@ -135,7 +109,6 @@ public class Automaton extends PathfinderMob implements ContainerListener, Modul
 
         pCompound.put("Items", itemList);
         pCompound.put("inventory", itemHandler.serializeNBT());
-
     }
 
     @Override
@@ -143,16 +116,13 @@ public class Automaton extends PathfinderMob implements ContainerListener, Modul
         super.readAdditionalSaveData(pCompound);
 
         ListTag itemList = pCompound.getList("Items", 10);
-
-        for(int i = 0; i < itemList.size(); ++i) {
+        for (int i = 0; i < itemList.size(); ++i) {
             CompoundTag compoundTag = itemList.getCompound(i);
             int item = compoundTag.getByte("Slot") & 255;
             if (item < this.inventory.getContainerSize()) {
                 this.inventory.setItem(item, ItemStack.of(compoundTag));
             }
         }
-
-        this.updateContainerEquipment();
 
         itemHandler.deserializeNBT(pCompound.getCompound("inventory"));
     }
@@ -211,7 +181,7 @@ public class Automaton extends PathfinderMob implements ContainerListener, Modul
     protected void dropEquipment() {
         super.dropEquipment();
         if (this.inventory != null) {
-            for(int i = 0; i < this.inventory.getContainerSize(); ++i) {
+            for (int i = 0; i < this.inventory.getContainerSize(); ++i) {
                 ItemStack itemstack = this.inventory.getItem(i);
                 if (!itemstack.isEmpty() && !EnchantmentHelper.hasVanishingCurse(itemstack)) {
                     this.spawnAtLocation(itemstack);
@@ -243,10 +213,11 @@ public class Automaton extends PathfinderMob implements ContainerListener, Modul
 
     private void startWatching(Player pPlayer) {
         this.setWatchingPlayer(pPlayer);
-        this.openModuleScreen(pPlayer, this.getDisplayName());
+        this.openModuleScreen(pPlayer, this.inventory, this.getDisplayName());
     }
 
-    /**Se llama cada vez que cambia el contenedor, evento establecido en this.inventory.addListener(this);
+    /**
+     * Se llama cada vez que cambia el contenedor, evento establecido en this.inventory.addListener(this);
      */
     public void containerChanged(Container container) {
 
@@ -260,8 +231,8 @@ public class Automaton extends PathfinderMob implements ContainerListener, Modul
 
     static {
         AUTOMATON_DATA = SynchedEntityData.defineId(Automaton.class, ModEDataSerializers.AUTOMATON_DATA);
-        LEGGED_DIMENSIONS = EntityDimensions.fixed(0.8f,1f);
-        NO_LEGS_DIMENSIONS = EntityDimensions.fixed(0.8f,1.9f);
-        DATA_ID_FLAGS = SynchedEntityData.defineId(AbstractHorse.class, EntityDataSerializers.BYTE);
+        LEGGED_DIMENSIONS = EntityDimensions.fixed(0.8f, 1f);
+        NO_LEGS_DIMENSIONS = EntityDimensions.fixed(0.8f, 1.9f);
     }
+
 }

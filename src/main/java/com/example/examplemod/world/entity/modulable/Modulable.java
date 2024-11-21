@@ -1,4 +1,4 @@
-package com.example.examplemod.world.item.modulable;
+package com.example.examplemod.world.entity.modulable;
 
 import com.example.examplemod.client.gui.inventory.ModuleMenu;
 import com.example.examplemod.world.entity.Automaton;
@@ -22,9 +22,9 @@ public interface Modulable {
 
     Container getContainer();
 
-    default void openModuleScreen(Player pPlayer, Component pDisplayName) {
+    default void openModuleScreen(Player pPlayer, Container pContainer, Component pDisplayName) {
         pPlayer.openMenu(new SimpleMenuProvider((pContainerId, pPlayerInventory, p_45300_) -> {
-            return new ModuleMenu(pContainerId, pPlayerInventory, this);
+            return new ModuleMenu(pContainerId, pPlayerInventory, pContainer, this);
                 }, pDisplayName)
         );
 

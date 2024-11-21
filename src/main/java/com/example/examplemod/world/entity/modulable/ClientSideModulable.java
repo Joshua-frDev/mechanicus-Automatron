@@ -1,4 +1,4 @@
-package com.example.examplemod.world.item.modulable;
+package com.example.examplemod.world.entity.modulable;
 
 import com.example.examplemod.world.entity.Automaton;
 import net.minecraft.world.Container;

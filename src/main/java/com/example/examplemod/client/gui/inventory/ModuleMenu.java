@@ -2,10 +2,11 @@ package com.example.examplemod.client.gui.inventory;
 
 import com.example.examplemod.world.entity.Automaton;
 import com.example.examplemod.world.entity.ModificationType;
-import com.example.examplemod.world.item.modulable.ClientSideModulable;
-import com.example.examplemod.world.item.modulable.Modulable;
+import com.example.examplemod.world.entity.modulable.ClientSideModulable;
+import com.example.examplemod.world.entity.modulable.Modulable;
 import com.example.examplemod.register.ModMenuType;
 import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -13,7 +14,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Iterator;
 import java.util.Set;
 
 public class ModuleMenu extends AbstractContainerMenu {
@@ -23,25 +23,21 @@ public class ModuleMenu extends AbstractContainerMenu {
     private final Automaton automaton;
 
     public ModuleMenu(int pContainerId, Inventory pInventory) {
-        this(pContainerId, pInventory, new ClientSideModulable(pInventory.player));
+        this(pContainerId, pInventory, new SimpleContainer(5), new ClientSideModulable(pInventory.player));
     }
 
-    public ModuleMenu(int pContainerId, Inventory inventory, Modulable pModulable) {
+    public ModuleMenu(int pContainerId, Inventory inventory, Container pContainer, Modulable pModulable) {
         super(ModMenuType.MODULE_MENU.get(), pContainerId);
+        checkContainerSize(pContainer, 5);
+        this.automatonContainer = pContainer;
         this.source = pModulable;
-        this.automatonContainer = source.getContainer();
         this.automaton = source.getAutomaton();
         checkContainerSize(inventory, 2);
-
-//        for (int i = 0; i < automatonContainer.getContainerSize(); i++) {
-//
-//        }
-        //this.addSlot(new Slot(this., 0, 136, 37));
-        //this.addSlot(new Slot(this., 1, 162, 37));
+        System.out.println(automatonContainer);
 
         this.addSlot(new Slot(this.automatonContainer, 0, 136, 37) {
-            public boolean mayPlace(ItemStack itemStack) {
-                return isValidModification(itemStack, ModificationType.bySlot(0)) && !this.hasItem();
+            public boolean mayPlace(@NotNull ItemStack itemStack) {
+                return true;//isValidModification(itemStack, ModificationType.bySlot(0)) && !this.hasItem();
             }
 
             public int getMaxStackSize() {
@@ -50,8 +46,8 @@ public class ModuleMenu extends AbstractContainerMenu {
         });
 
         this.addSlot(new Slot(this.automatonContainer, 1, 162, 37) {
-            public boolean mayPlace(ItemStack itemStack) {
-                return isValidModification(itemStack, ModificationType.bySlot(1)) && !this.hasItem();
+            public boolean mayPlace(@NotNull ItemStack itemStack) {
+                return true;//isValidModification(itemStack, ModificationType.bySlot(1)) && !this.hasItem();
             }
 
             public int getMaxStackSize() {
@@ -64,7 +60,7 @@ public class ModuleMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(@NotNull Player pPlayer) {
-        return this.source.getWatchingPlayer() == pPlayer && this.automaton.distanceTo(pPlayer) < 8.0F && this.automaton.isAlive();
+        return this.source.getWatchingPlayer() == pPlayer && this.automaton.distanceTo(pPlayer) < 8.0F && this.automaton.isAlive();//TODO TESTEAR ESTO
     }
 
     public boolean isValidModification(ItemStack pItemStack, Set<ModificationType> modificationTypeSet) {
@@ -73,11 +69,12 @@ public class ModuleMenu extends AbstractContainerMenu {
 //        modificationTypeSet.forEach(modificationType -> {
 //            flag = pItemStack.is(ModificationType.getItemByModif(modificationType));
 //        });
-        for (Iterator<ModificationType> i = modificationTypeSet.iterator(); i.hasNext() || !flag; ) {
-            if (pItemStack.is(ModificationType.getItemByModif((ModificationType) i.next()))) {
-                flag = true;
-            }
-        }
+
+//        for (Iterator<ModificationType> i = modificationTypeSet.iterator(); i.hasNext() || !flag; ) {
+//            if (pItemStack.is(ModificationType.getItemByModif((ModificationType) i.next()))) {
+//                flag = true;
+//            }
+//        }
 
         return flag;
     }

@@ -1,11 +1,5 @@
 package com.example.examplemod.client.gui.inventory;
 
-import com.example.examplemod.world.item.modulable.Modulable;
-import net.minecraft.core.NonNullList;
-import net.minecraft.world.Container;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-
 public class ModuleContainer {
 //
 //    private final NonNullList<ItemStack> itemStacks;
