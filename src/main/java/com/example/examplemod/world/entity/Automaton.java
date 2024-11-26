@@ -34,6 +34,11 @@ public class Automaton extends PathfinderMob implements ContainerListener, Modul
     protected static final EntityDimensions NO_LEGS_DIMENSIONS;
     protected static final EntityDimensions LEGGED_DIMENSIONS;
     public static final int INVENTORY_SIZE = 5;
+    public static final int SLOT_LEFT_ARM = 0;
+    public static final int SLOT_RIGHT_ARM = 1;
+    public static final int SLOT_HEAD = 2;
+    public static final int SLOT_LEGS = 3;
+    public static final int SLOT_CORE = 4;
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     private final ItemStackHandler itemHandler = new ItemStackHandler(INVENTORY_SIZE);
     private static final EntityDataAccessor<AutomatonData> AUTOMATON_DATA;

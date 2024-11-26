@@ -1,6 +1,7 @@
 package com.example.examplemod.network;
 
 import com.example.examplemod.world.entity.AutomatonData;
+import com.example.examplemod.world.item.modifications.ItemModification;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import org.jetbrains.annotations.NotNull;
@@ -20,7 +21,7 @@ public class ModEDataSerializers {
             public @NotNull AutomatonData read(FriendlyByteBuf friendlyByteBuf) {
                 return new AutomatonData(
                         friendlyByteBuf.readVarInt(),
-                        friendlyByteBuf.readMap(FriendlyByteBuf::readInt, FriendlyByteBuf::readUtf)
+                        ItemModification.ItemVariant.getItemsFromString(friendlyByteBuf.readMap(FriendlyByteBuf::readInt, FriendlyByteBuf::readUtf))
                 );
             }
         };

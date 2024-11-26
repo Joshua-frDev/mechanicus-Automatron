@@ -1,16 +1,17 @@
 package com.example.examplemod.client.gui.inventory;
 
 import com.example.examplemod.world.entity.Automaton;
-import com.example.examplemod.world.entity.ModificationType;
 import com.example.examplemod.world.entity.modulable.ClientSideModulable;
 import com.example.examplemod.world.entity.modulable.Modulable;
 import com.example.examplemod.register.ModMenuType;
+import com.example.examplemod.world.item.modifications.ItemModification;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,11 +34,10 @@ public class ModuleMenu extends AbstractContainerMenu {
         this.source = pModulable;
         this.automaton = source.getAutomaton();
         checkContainerSize(inventory, 2);
-        System.out.println(automatonContainer);
 
         this.addSlot(new Slot(this.automatonContainer, 0, 136, 37) {
             public boolean mayPlace(@NotNull ItemStack itemStack) {
-                return true;//isValidModification(itemStack, ModificationType.bySlot(0)) && !this.hasItem();
+                return isValidModification(itemStack, ItemModification.ItemVariant.bySlot(0)) && !this.hasItem();
             }
 
             public int getMaxStackSize() {
@@ -47,7 +47,7 @@ public class ModuleMenu extends AbstractContainerMenu {
 
         this.addSlot(new Slot(this.automatonContainer, 1, 162, 37) {
             public boolean mayPlace(@NotNull ItemStack itemStack) {
-                return true;//isValidModification(itemStack, ModificationType.bySlot(1)) && !this.hasItem();
+                return isValidModification(itemStack, ItemModification.ItemVariant.bySlot(1)) && !this.hasItem();
             }
 
             public int getMaxStackSize() {
@@ -63,20 +63,8 @@ public class ModuleMenu extends AbstractContainerMenu {
         return this.source.getWatchingPlayer() == pPlayer && this.automaton.distanceTo(pPlayer) < 8.0F && this.automaton.isAlive();//TODO TESTEAR ESTO
     }
 
-    public boolean isValidModification(ItemStack pItemStack, Set<ModificationType> modificationTypeSet) {
-        //modificationType =  TACTIC_VISOR, NONE
-        boolean flag = false;
-//        modificationTypeSet.forEach(modificationType -> {
-//            flag = pItemStack.is(ModificationType.getItemByModif(modificationType));
-//        });
-
-//        for (Iterator<ModificationType> i = modificationTypeSet.iterator(); i.hasNext() || !flag; ) {
-//            if (pItemStack.is(ModificationType.getItemByModif((ModificationType) i.next()))) {
-//                flag = true;
-//            }
-//        }
-
-        return flag;
+    public boolean isValidModification(ItemStack pItemStack, Set<Item> validItems) {
+        return validItems.contains(pItemStack.getItem());
     }
 
     private void createPlayerInventory(Inventory pInvetory) {

@@ -20,6 +20,10 @@ public class ModTab {
                     .displayItems((itemDisplayParameters, output) -> {
 
                         output.accept(ModItem.AUTOMATON_SPAWN_EGG.get());
+                        output.accept(ModItem.DRILL_ARM.get());
+                        output.accept(ModItem.SPEAR_ARM.get());
+                        output.accept(ModItem.TARGETING_VISOR.get());
+                        output.accept(ModItem.GRIPPER_ARM.get());
 
                     }).build());
 
